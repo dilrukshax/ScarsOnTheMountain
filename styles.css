@@ -7,13 +7,14 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;padding:0;background:#0b0e12;color:var(--ink);font-family: "IM Fell English", serif}
-#game-canvas{position:fixed;inset:0;display:block;width:100vw;height:100vh}
+#game-canvas{position:fixed;inset:0;display:block;width:100vw;height:100vh;z-index:0}
 
 /* Parchment panels */
 .parchment{position:fixed;left:16px;top:16px;min-width:260px;max-width:420px;background:var(--parchment);color:var(--ink);border:2px solid var(--gold);box-shadow:0 8px 30px var(--shadow);padding:12px 14px;border-radius:8px;background-image:radial-gradient(rgba(0,0,0,0.05), transparent 60%),
- linear-gradient(135deg, rgba(200,164,75,0.15), transparent 60%)}
+ linear-gradient(135deg, rgba(200,164,75,0.15), transparent 60%);pointer-events:auto;z-index:3}
 .parchment h1{margin:6px 0 10px 0;font-size:22px}
 .hidden{display:none}
+.parchment.centered{left:50%;top:50%;transform:translate(-50%,-50%);min-width:320px;text-align:center}
 
 #hud{display:flex;gap:12px;align-items:center}
 #hud #score,#hud #combo{font-weight:bold}

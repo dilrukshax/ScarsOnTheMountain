@@ -11,10 +11,20 @@
 </head>
 <body>
   <div id="ui-root">
-    <div id="hud" class="parchment">
+    <div id="hud" class="parchment hidden">
       <div id="score">Score: 0</div>
       <div id="combo">Combo: x1</div>
+      <div id="objective" style="margin-right:8px;font-weight:bold"></div>
+      <button id="to-menu" class="btn">Menu</button>
       <button id="to-map" class="btn">World Map</button>
+    </div>
+
+    <div id="main-menu" class="parchment centered">
+      <h1>Choose a Game</h1>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button id="play-castle" class="btn">Castle: Mountain Cannon</button>
+        <button id="play-car" class="btn">Infinity Road (F1)</button>
+      </div>
     </div>
 
     <div id="dialogue" class="parchment hidden">
