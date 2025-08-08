@@ -10,27 +10,44 @@ export class Player{
   }
 
   private clickHandler = (ev: PointerEvent)=>{
+    if (ev.button !== 0) return
     if (this.game.state !== 'playing') return
 
-    // First: check if we clicked a cannon to enter cannon mode
+    // If already in cannon mode, fire immediately
+    const activeCannon = this.game.cannons.find(c=> c.playerMode)
+    if (activeCannon){
+      activeCannon.playerFire()
+      return
+    }
+
+    // Raycast for cannon
     const mouse = this.game.getMouse()
     mouse.set((ev.clientX / window.innerWidth) * 2 - 1, -(ev.clientY / window.innerHeight) * 2 + 1)
     const ray = this.game.getRaycaster()
     ray.setFromCamera(mouse, this.game.camera)
     const hits = ray.intersectObjects(this.game.cannons.map(c=> c.root), true)
     if (hits.length){
-      const cannon = this.game.cannons.find(c=> hits[0].object === c.root || c.root.children.includes(hits[0].object as any))
+      const cannon = this.game.cannons.find(c=> hits.some(h=> c.root === h.object || c.root.children.includes(h.object as any)))
       if (cannon){
         cannon.enterPlayerMode()
         return
       }
     }
 
-    // If already in cannon mode, fire cannon
-    const activeCannon = this.game.cannons.find(c=> c.playerMode)
-    if (activeCannon){
-      activeCannon.playerFire()
-      return
+    // Fallback: distance-to-ray selection (helpful when cannon is small on screen)
+    const ro = ray.ray.origin
+    const rd = ray.ray.direction
+    for (const c of this.game.cannons){
+      const cp = c.root.getWorldPosition(new THREE.Vector3())
+      const v = new THREE.Vector3().subVectors(cp, ro)
+      const proj = v.dot(rd)
+      if (proj < 0) continue // behind camera
+      const closest = new THREE.Vector3().copy(ro).addScaledVector(rd, proj)
+      const d = closest.distanceTo(cp)
+      if (d < 1.2){
+        c.enterPlayerMode()
+        return
+      }
     }
 
     // Otherwise: eye-click shoot from camera
@@ -46,7 +63,7 @@ export class Player{
   }
 
   update(dt: number){
-    // touch support could be expanded here
+    // no-op
   }
 
   dispose(){

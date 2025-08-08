@@ -124,15 +124,15 @@ export class Game {
     const clouds = createCloudLayer()
     this.scene.add(clouds)
 
-    // Cannons
-    this.createCannons()
-
-    // Castle at peak
+    // Castle at peak (build first)
     if (this.castle){ this.castle.removeFrom(this.scene) }
     this.castle = new Castle()
     const peak = getPeakPosition()
     this.castle.root.position.copy(peak)
     this.castle.addTo(this.scene)
+
+    // Cannons (after castle so we can position on top)
+    this.createCannons()
   }
 
   private createHouses(){
@@ -158,16 +158,20 @@ export class Game {
   }
 
   private createCannons(){
-    // Clear existing
     for(const c of this.cannons){ c.dispose(this.scene) }
     this.cannons.length = 0
 
-    const positions = [ new THREE.Vector3(-4, 2.5, -2), new THREE.Vector3(5, 3.2, -3) ]
-    for(const p of positions){
-      const cannon = new Cannon(this, p)
-      cannon.addTo(this.scene)
-      this.cannons.push(cannon)
+    // If castle exists, compute its top center and place cannon there
+    let pos = getPeakPosition().clone().add(new THREE.Vector3(1.6, 0.0, 0.8))
+    if (this.castle){
+      const box = new THREE.Box3().setFromObject(this.castle.root)
+      const center = box.getCenter(new THREE.Vector3())
+      pos = new THREE.Vector3(center.x, box.max.y + 0.3, center.z)
     }
+
+    const cannon = new Cannon(this, pos)
+    cannon.addTo(this.scene)
+    this.cannons.push(cannon)
   }
 
   // Round control
@@ -179,14 +183,14 @@ export class Game {
     this.ui.updateScore(this.score.points)
     this.ui.updateCombo(this.score.combo)
     this.hitCastleThisRound = false
-    this.ui.setObjective('Objective: Hit the castle at the mountain peak!')
+    this.ui.setObjective('Objective: Pop the balloons using the mountain cannon!')
 
-    // Move camera to face the peak and castle
-    this.controls.target.set(0, 6, -6)
-    this.camera.position.set(0, 7, 14)
+    // Camera to see cannon/peak
+    const peak = getPeakPosition()
+    this.controls.target.copy(peak)
+    this.camera.position.set(peak.x + 6, peak.y + 3, peak.z + 10)
 
-    // fewer balloons, focus on castle objective
-    const count = Math.max(5, this.targetBalloonCount - 4) + (level-1)*2
+    const count = Math.max(8, this.targetBalloonCount) + (level-1)*3
     for (let i = 0; i < count; i++) this.spawnBalloon()
   }
 
@@ -211,9 +215,13 @@ export class Game {
 
   public spawnBalloon(){
     const b = this.balloonPool.pop() ?? new Balloon(this)
-    const x = -8 + Math.random()*16
-    const y = 3 + Math.random()*6
-    const z = -6 - Math.random()*6
+    // Spawn balloons around the mountain peak so the cannon can shoot them
+    const center = getPeakPosition()
+    const angle = Math.random()*Math.PI*2
+    const radius = 3 + Math.random()*5
+    const x = center.x + Math.cos(angle) * radius
+    const z = center.z + Math.sin(angle) * radius
+    const y = center.y + 1.5 + Math.random()*4
     b.activate(new THREE.Vector3(x,y,z))
     this.balloons.push(b)
     b.addTo(this.scene)
@@ -251,22 +259,21 @@ export class Game {
   // Collision checks (projectiles vs balloons)
   private checkCollisions(){
     for(const p of this.projectiles){
-      // castle check first
+      // castle spark feedback only (no auto-complete)
       if (this.castle){
         const res = this.castle.hitTest(p.position)
         if (res.hit){
           this.recycleProjectile(p)
-          this.score.onHit(res.bonus ? 500 : 250, p.isCannon)
+          this.score.onHit(res.bonus ? 120 : 60, p.isCannon)
           this.ui.updateScore(this.score.points)
           this.ui.updateCombo(this.score.combo)
-          this.hitCastleThisRound = true
           this.ui.playPop()
-          // Optional: immediately complete round when castle hit
-          this.completeRound()
-          return
+          // don't end the round on castle hit
+          continue
         }
       }
 
+      // balloons
       for(const b of this.balloons){
         if (!b.active) continue
         const dist = p.position.distanceTo(b.position)
