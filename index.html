@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scars on the Mountain Peak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="ui-root">
+    <div id="hud" class="parchment">
+      <div id="score">Score: 0</div>
+      <div id="combo">Combo: x1</div>
+      <button id="to-map" class="btn">World Map</button>
+    </div>
+
+    <div id="dialogue" class="parchment hidden">
+      <div id="dialogue-text"></div>
+      <div id="dialogue-choices"></div>
+      <button id="dialogue-close" class="btn">Close</button>
+    </div>
+
+    <div id="world-map" class="parchment hidden">
+      <h1>World Map</h1>
+      <div id="map-nodes">
+        <button class="map-node" data-level="1">Peak Pass</button>
+        <button class="map-node" data-level="2">Valley Watch</button>
+      </div>
+      <button id="map-close" class="btn">Back</button>
+    </div>
+  </div>
+  <canvas id="game-canvas"></canvas>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

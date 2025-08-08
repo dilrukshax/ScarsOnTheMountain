@@ -1,0 +1,40 @@
+/* Global styles */
+:root{
+  --parchment:#efe5d0;
+  --ink:#2a1d0f;
+  --gold:#c8a44b;
+  --shadow:rgba(0,0,0,0.4);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;padding:0;background:#0b0e12;color:var(--ink);font-family: "IM Fell English", serif}
+#game-canvas{position:fixed;inset:0;display:block;width:100vw;height:100vh}
+
+/* Parchment panels */
+.parchment{position:fixed;left:16px;top:16px;min-width:260px;max-width:420px;background:var(--parchment);color:var(--ink);border:2px solid var(--gold);box-shadow:0 8px 30px var(--shadow);padding:12px 14px;border-radius:8px;background-image:radial-gradient(rgba(0,0,0,0.05), transparent 60%),
+ linear-gradient(135deg, rgba(200,164,75,0.15), transparent 60%)}
+.parchment h1{margin:6px 0 10px 0;font-size:22px}
+.hidden{display:none}
+
+#hud{display:flex;gap:12px;align-items:center}
+#hud #score,#hud #combo{font-weight:bold}
+.btn{margin-left:auto;background:var(--gold);color:#1a1206;border:none;padding:6px 10px;border-radius:6px;font-weight:bold;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+
+/* Dialogue */
+#dialogue{left:50%;top:auto;bottom:16px;transform:translateX(-50%);width:min(800px, calc(100% - 32px));}
+#dialogue-text{margin-bottom:12px;line-height:1.4}
+#dialogue-choices{display:flex;gap:8px;flex-wrap:wrap}
+#dialogue-choices .btn{margin:0}
+
+/* World Map */
+#world-map{left:50%;top:50%;transform:translate(-50%,-50%);min-width:320px;text-align:center}
+#map-nodes{display:flex;gap:12px;justify-content:center;margin:12px 0}
+.map-node{background:#264653;color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer}
+.map-node:hover{filter:brightness(1.1)}
+
+/* Mobile tweaks */
+@media (max-width: 720px){
+  #hud{gap:8px}
+  .parchment{left:8px;top:8px;padding:10px}
+  #dialogue{bottom:8px}
+}

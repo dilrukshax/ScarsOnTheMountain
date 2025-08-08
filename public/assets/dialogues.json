@@ -1,0 +1,39 @@
+{
+  "nodes": {
+    "start": {
+      "text": "At the crest of the world, scars of old battles whisper in the fog.",
+      "choices": [
+        { "text": "Listen to the wind", "next": "wind" },
+        { "text": "Descend to the valley", "next": "valley" }
+      ]
+    },
+    "wind": {
+      "text": "The wind carries a vow: protect those below from the drifting storm balloons.",
+      "choices": [
+        { "text": "I will stand watch.", "next": "end_good" },
+        { "text": "Another time.", "next": "end_neutral" }
+      ]
+    },
+    "valley": {
+      "text": "Small houses huddle like secrets. Cannons rest, hungry for thunder.",
+      "choices": [
+        { "text": "Man the cannon", "next": "end_good" },
+        { "text": "Let the fog decide", "next": "end_neutral" }
+      ]
+    },
+    "end_good": {
+      "text": "You held the pass. The mountain remembers your name.",
+      "choices": []
+    },
+    "end_neutral": {
+      "text": "The fog records no footprints today.",
+      "choices": []
+    }
+  },
+  "roundComplete": {
+    "text": "The balloons scatter. Your vigil marks the parchment of history.",
+    "choices": [
+      { "text": "Continue", "next": "start" }
+    ]
+  }
+}
